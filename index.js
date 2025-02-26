@@ -6,14 +6,14 @@ const config = {
   clientId: "",
   clientSecret: "",
   accountA: {
-    vaultId: "",
-    walletId: "",
-    address: "",
+    vaultId: "01923d35-bdb3-7077-a673-9adf1e14268e",
+    walletId: "01923d41-5563-7100-a80a-2ac840389787",
+    address: "rKhQzekmU67UPa3NrCj4jDQK1o4XWHeu24",
   },
   accountB: {
-    vaultId: "",
-    walletId: "",
-    address: "",
+    vaultId: "01923d35-bdb3-7077-a673-9adf1e14268e",
+    walletId: "01923d42-8148-713f-be85-8c9ae1fc5ffe",
+    address: "rMFuFhbFJA8UmrChpsjhEPKkxYK2Vsy6AT",
   },
   authUrl: "https://api.palisade.co/v2/credentials/oauth/token",
   transactionUrl: (vaultId, walletId) =>
@@ -24,6 +24,7 @@ const config = {
   transactionAmount: "86000",
 };
 
+// Function to get access token
 const getAccessToken = async () => {
   try {
     const response = await axios.post(config.authUrl, {
@@ -38,6 +39,7 @@ const getAccessToken = async () => {
   }
 };
 
+// Function to send XRP between two accounts (amount as string)
 const sendTransaction = async (sender, receiver) => {
   try {
     const response = await axios.post(
@@ -62,6 +64,7 @@ const sendTransaction = async (sender, receiver) => {
   }
 };
 
+// Function to check the status of a transaction
 const checkTransactionStatus = async (vaultId, walletId, transactionId) => {
   try {
     const response = await axios.get(
@@ -78,6 +81,7 @@ const checkTransactionStatus = async (vaultId, walletId, transactionId) => {
   }
 };
 
+// Helper function to wait for transaction confirmation
 const waitForConfirmation = async (vaultId, walletId, transactionId) => {
   let status;
   while (status !== "CONFIRMED") {
@@ -89,13 +93,14 @@ const waitForConfirmation = async (vaultId, walletId, transactionId) => {
   }
 };
 
+// Function to handle the transaction loop sequentially
 const transactionLoop = async () => {
   try {
     while (true) {
+      // Send 1 XRP from Account A to Account B
       console.log(
         `Sending ${config.transactionAmount} XRP from Account A to Account B`
       );
-
       let txAtoB = await sendTransaction(config.accountA, config.accountB);
 
       if (txAtoB) {
@@ -107,7 +112,7 @@ const transactionLoop = async () => {
         );
         console.log("Transaction from A to B confirmed");
 
-        // Send from Account B to Account A
+        // Send 1 XRP from Account B to Account A
         console.log(
           `Sending ${config.transactionAmount} XRP from Account B to Account A`
         );
